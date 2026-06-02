@@ -1,3 +1,4 @@
+'use client'
 import { useState } from "react";
 import { Link, Button } from "@heroui/react";
 
