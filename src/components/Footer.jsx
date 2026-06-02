@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image"; // Next.js Image Component ইম্পোর্ট করা হয়েছে
 import { FaFacebookF, FaLinkedinIn, FaPinterestP } from "react-icons/fa";
 
 export default function Footer() {
@@ -41,12 +42,17 @@ export default function Footer() {
           
           {/* Left Column: Logo & Tagline */}
           <div className="md:col-span-5 space-y-4">
-            <Link href="/" className="font-bold text-2xl flex items-center gap-1">
-              <span className="text-[#00d2ff]">hire</span>
-              <span className="bg-gradient-to-r from-[#00d2ff] via-[#9d4edd] to-[#ff6b00] bg-clip-text text-transparent">
-                loop
-              </span>
-            </Link>
+            <div className="flex-shrink-0">
+              <Link href="/" className="flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="hireloop logo"
+                  width={130}
+                  height={32}
+                  className="object-contain"
+                />
+              </Link>
+            </div>
             <p className="text-zinc-600 max-w-xs leading-relaxed">
               The AI-native career platform. Built for people who take their work seriously.
             </p>
