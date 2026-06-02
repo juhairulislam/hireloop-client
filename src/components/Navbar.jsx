@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { HiBars3, HiXMark } from "react-icons/hi2";
 
 export default function Navbar() {
@@ -37,11 +38,15 @@ export default function Navbar() {
 
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link href="/" className="font-bold text-2xl flex items-center gap-1">
-                <span className="text-[#00d2ff]">hire</span>
-                <span className="bg-gradient-to-r from-[#00d2ff] via-[#9d4edd] to-[#ff6b00] bg-clip-text text-transparent">
-                  loop
-                </span>
+              <Link href="/" className="flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="hireloop logo"
+                  width={130}
+                  height={32}
+                  priority
+                  className="object-contain"
+                />
               </Link>
             </div>
           </div>
