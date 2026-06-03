@@ -1,9 +1,12 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaImage, FaEye, FaEyeSlash } from "react-icons/fa";
-
-export default function RegisterComponent() {
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+export default function Register() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -12,13 +15,35 @@ export default function RegisterComponent() {
     password: "",
   });
 
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registration Data Submitted:", formData);
+
+    try {
+
+        const { data, error } = await authClient.signUp.email({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        image: formData.imageLink, 
+      });
+
+      if (error) {
+        toast.error(error.message || "Something went wrong!");
+        return;
+      }
+
+      toast.success("Successful sign up!");
+      
+
+      router.push("/");
+    } catch (err) {
+      toast.error("An unexpected error occurred.");
+    }
   };
 
   return (
@@ -33,7 +58,7 @@ export default function RegisterComponent() {
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2">
-            Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]">Account</span>
+            Create <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-purple-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]">Account</span>
           </h2>
           <p className="text-sm text-gray-400">Fill in the details to register your account</p>
         </div>
@@ -86,6 +111,7 @@ export default function RegisterComponent() {
                 <FaImage className="text-sm" />
               </div>
               <input
+              required
                 type="url"
                 name="imageLink"
                 value={formData.imageLink}
@@ -125,7 +151,7 @@ export default function RegisterComponent() {
           {/* Register Button with Neon Glow */}
           <button
             type="submit"
-            className="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold tracking-wide hover:from-cyan-400 hover:to-purple-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] transform active:scale-[0.98] transition-all duration-300 focus:outline-none"
+            className="w-full mt-2 py-3.5 px-4 rounded-xl bg-linear-to-r from-cyan-500 to-purple-600 text-white font-semibold tracking-wide hover:from-cyan-400 hover:to-purple-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] transform active:scale-[0.98] transition-all duration-300 focus:outline-none"
           >
             Register
           </button>
