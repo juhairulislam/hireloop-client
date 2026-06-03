@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image"; // Next.js Image Component ইম্পোর্ট করা হয়েছে
+import Image from "next/image"; 
 import { FaFacebookF, FaLinkedinIn, FaPinterestP } from "react-icons/fa";
 
 export default function Footer() {
