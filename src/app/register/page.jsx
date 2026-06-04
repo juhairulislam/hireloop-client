@@ -3,10 +3,8 @@
 import { authClient } from "@/lib/auth-client";
 import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaImage, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 export default function Register() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -38,9 +36,10 @@ export default function Register() {
       }
 
       toast.success("Successful sign up!");
+            window.location.href = "/"
+
       
 
-      router.push("/");
     } catch (err) {
       toast.error("An unexpected error occurred.");
     }

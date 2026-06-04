@@ -178,7 +178,7 @@ export default function Navbar() {
               </div>
             ) : user ? (
               <>
-                <div className="flex items-center gap-3 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                <div className="flex items-center gap-3  bg-zinc-900/50 border border-zinc-800 rounded-xl">
                   {user.image ? (
                     <Image
                       src={user.image}
