@@ -6,10 +6,12 @@ import Image from "next/image";
 import { HiBars3, HiXMark } from "react-icons/hi2";
 import { BiLoaderAlt } from "react-icons/bi";
 import { FiLogOut, FiUser } from "react-icons/fi";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
+import { toast } from "react-hot-toast"; 
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); 
   const { data: session, isPending } = useSession();
 
   const user = session?.user;
@@ -21,15 +23,30 @@ export default function Navbar() {
   ];
 
   const handleLogout = async () => {
-    // Add your auth-client sign out method here
-    console.log("Logged out");
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    const toastId = toast.loading("Logging out...");
+
+    try {
+      await authClient.signOut();
+      toast.success("Logged out successfully!", { id: toastId });
+      
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.", { id: toastId });
+      setIsLoggingOut(false);
+    }
   };
 
   return (
     <nav className="bg-[#121212] border-b border-zinc-800 fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
+
           {/* Left Side: Mobile Menu Button & Logo */}
           <div className="flex items-center gap-4">
             {/* Mobile Menu Toggle Button */}
@@ -104,13 +121,18 @@ export default function Navbar() {
                       {user.name}
                     </span>
                   </div>
-                  
+
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-1.5 text-zinc-400 hover:text-red-400 text-sm font-medium transition-colors cursor-pointer"
+                    disabled={isLoggingOut}
+                    className="flex items-center gap-1.5 text-zinc-400 hover:text-red-400 text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <FiLogOut className="h-4 w-4" />
-                    <span>Logout</span>
+                    {isLoggingOut ? (
+                      <BiLoaderAlt className="animate-spin h-4 w-4" />
+                    ) : (
+                      <FiLogOut className="h-4 w-4" />
+                    )}
+                    <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
                   </button>
                 </div>
               ) : (
@@ -148,7 +170,7 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          
+
           <div className="pt-4 border-t border-zinc-800 flex flex-col gap-3">
             {isPending ? (
               <div className="flex justify-center py-2">
@@ -174,16 +196,21 @@ export default function Navbar() {
                     {user.name}
                   </span>
                 </div>
-                
+
                 <button
                   onClick={() => {
                     handleLogout();
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-800 text-red-400 hover:bg-zinc-800 text-sm font-medium py-2.5 rounded-xl transition-colors w-full"
+                  disabled={isLoggingOut}
+                  className="flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-800 text-red-400 hover:bg-zinc-800 text-sm font-medium py-2.5 rounded-xl transition-colors w-full disabled:opacity-50"
                 >
-                  <FiLogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  {isLoggingOut ? (
+                    <BiLoaderAlt className="animate-spin h-4 w-4" />
+                  ) : (
+                    <FiLogOut className="h-4 w-4" />
+                  )}
+                  <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
                 </button>
               </>
             ) : (
