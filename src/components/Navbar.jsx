@@ -15,7 +15,6 @@ export default function Navbar() {
   const { data: session, isPending } = useSession();
 
   const user = session?.user;
-  // console.log(user)
 
   const menuItems = [
     { label: "Browse Jobs", href: "/jobs" },
