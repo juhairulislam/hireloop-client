@@ -2,11 +2,12 @@
 
 import { authClient } from "@/lib/auth-client";
 import React, { useState } from "react";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,6 +19,9 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
+
+    setIsLoading(true);
 
     try {
       const { data, error } = await authClient.signIn.email({
@@ -31,9 +35,11 @@ export default function Login() {
       }
 
       toast.success("Welcome back! Successful login.");
-      window.location.href = "/"
+      window.location.href = "/";
     } catch (err) {
       toast.error("An unexpected error occurred.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,11 +72,12 @@ export default function Login() {
               <input
                 type="email"
                 name="email"
+                disabled={isLoading}
                 value={formData.email}
                 onChange={handleChange}
                 required
                 placeholder="you@example.com"
-                className="w-full pl-10 pr-4 py-3 bg-[#0d0d1a]/80 text-white placeholder-gray-600 rounded-xl border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all duration-300 shadow-inner"
+                className="w-full pl-10 pr-4 py-3 bg-[#0d0d1a]/80 text-white placeholder-gray-600 rounded-xl border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all duration-300 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -90,28 +97,38 @@ export default function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
+                disabled={isLoading}
                 value={formData.password}
                 onChange={handleChange}
                 required
                 placeholder="••••••••"
-                className="w-full pl-10 pr-11 py-3 bg-[#0d0d1a]/80 text-white placeholder-gray-600 rounded-xl border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all duration-300 shadow-inner"
+                className="w-full pl-10 pr-11 py-3 bg-[#0d0d1a]/80 text-white placeholder-gray-600 rounded-xl border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all duration-300 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 type="button"
+                disabled={isLoading}
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-purple-400 transition-colors focus:outline-none"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-purple-400 transition-colors focus:outline-none disabled:opacity-50"
               >
                 {showPassword ? <FaEyeSlash className="text-sm" /> : <FaEye className="text-sm" />}
               </button>
             </div>
           </div>
 
-          {/* Login Button with Neon Glow */}
+          {/* Login Button with Neon Glow and Loading State */}
           <button
             type="submit"
-            className="w-full mt-2 py-3.5 px-4 rounded-xl bg-linear-to-r from-purple-600 to-cyan-500 text-white font-semibold tracking-wide hover:from-purple-500 hover:to-cyan-400 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] transform active:scale-[0.98] transition-all duration-300 focus:outline-none"
+            disabled={isLoading}
+            className="w-full mt-2 py-3.5 px-4 rounded-xl bg-linear-to-r from-purple-600 to-cyan-500 text-white font-semibold tracking-wide hover:from-purple-500 hover:to-cyan-400 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] transform active:scale-[0.98] transition-all duration-300 focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
           >
-            Log In
+            {isLoading ? (
+              <>
+                <FaSpinner className="animate-spin text-lg" />
+                <span>Logging in...</span>
+              </>
+            ) : (
+              "Log In"
+            )}
           </button>
         </form>
 
@@ -123,7 +140,7 @@ export default function Login() {
               href="/register"
               className="font-medium text-cyan-400 hover:text-purple-400 transition-colors duration-200 underline underline-offset-4 decoration-cyan-500/50 hover:decoration-purple-400"
             >
-              Register Here
+              SignUp
             </a>
           </p>
         </div>
