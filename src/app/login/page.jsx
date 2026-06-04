@@ -3,11 +3,9 @@
 import { authClient } from "@/lib/auth-client";
 import React, { useState } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function Login() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -33,7 +31,7 @@ export default function Login() {
       }
 
       toast.success("Welcome back! Successful login.");
-      router.push("/");
+      window.location.href = "/"
     } catch (err) {
       toast.error("An unexpected error occurred.");
     }
@@ -47,7 +45,7 @@ export default function Login() {
 
       {/* Main Glassmorphism Card with Neon Border */}
       <div className="relative w-full max-w-md p-8 rounded-2xl bg-[#111122]/70 backdrop-blur-xl border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)] hover:border-cyan-500/40 hover:shadow-[0_0_35px_rgba(6,182,212,0.2)] transition-all duration-500">
-        
+
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2">
