@@ -103,17 +103,19 @@ export default function Navbar() {
                 <BiLoaderAlt className="animate-spin text-zinc-400 h-5 w-5" />
               ) : user ? (
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 bg-zinc-900/50 border border-zinc-800 px-3 py-1.5 rounded-xl">
+                  <div className="flex items-center gap-2.5 bg-zinc-900/50 border border-zinc-800 pl-2 pr-3 py-1.5 rounded-xl">
                     {user.image ? (
-                      <Image
-                        src={user.image}
-                        alt={user.name || "User"}
-                        width={24}
-                        height={24}
-                        className="rounded-full object-cover"
-                      />
+                      <div className="relative w-9 h-9 rounded-full overflow-hidden border border-zinc-700/50 flex-shrink-0">
+                        <Image
+                          src={user.image}
+                          alt={user.name || "User"}
+                          fill
+                          sizes="36px"
+                          className="object-cover"
+                        />
+                      </div>
                     ) : (
-                      <div className="bg-zinc-800 p-1 rounded-full text-zinc-400">
+                      <div className="bg-zinc-800 p-2 rounded-full text-zinc-400 flex items-center justify-center w-9 h-9 flex-shrink-0 border border-zinc-700/50">
                         <FiUser className="h-4 w-4" />
                       </div>
                     )}
@@ -149,7 +151,7 @@ export default function Navbar() {
                   >
                     Get Started
                   </Link>
-                </>
+                </                >
               )}
             </div>
           </div>
@@ -178,17 +180,19 @@ export default function Navbar() {
               </div>
             ) : user ? (
               <>
-                <div className="flex items-center gap-3  bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                <div className="flex items-center gap-3 bg-zinc-900/50 border border-zinc-800 p-2 rounded-xl">
                   {user.image ? (
-                    <Image
-                      src={user.image}
-                      alt={user.name || "User"}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover"
-                    />
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-zinc-700/50 flex-shrink-0">
+                      <Image
+                        src={user.image}
+                        alt={user.name || "User"}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
-                    <div className="bg-zinc-800 p-1.5 rounded-full text-zinc-400">
+                    <div className="bg-zinc-800 p-2.5 rounded-full text-zinc-400 flex items-center justify-center w-10 h-10 flex-shrink-0 border border-zinc-700/50">
                       <FiUser className="h-5 w-5" />
                     </div>
                   )}
