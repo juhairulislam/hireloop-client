@@ -4,15 +4,26 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { HiBars3, HiXMark } from "react-icons/hi2";
+import { BiLoaderAlt } from "react-icons/bi";
+import { FiLogOut, FiUser } from "react-icons/fi";
+import { useSession } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+
+  const user = session?.user;
 
   const menuItems = [
     { label: "Browse Jobs", href: "/jobs" },
     { label: "Company", href: "/company" },
     { label: "Pricing", href: "/pricing" },
   ];
+
+  const handleLogout = async () => {
+    // Add your auth-client sign out method here
+    console.log("Logged out");
+  };
 
   return (
     <nav className="bg-[#121212] border-b border-zinc-800 fixed top-0 left-0 w-full z-50">
@@ -51,7 +62,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right Side: Navigation Links & Auth Buttons */}
+          {/* Right Side: Navigation Links & Auth/User Content */}
           <div className="hidden sm:flex items-center gap-6 ml-auto">
             {/* Desktop Navigation Links */}
             <div className="flex items-center space-x-8 mr-2">
@@ -69,20 +80,55 @@ export default function Navbar() {
             {/* Vertical Divider */}
             <div className="h-5 w-[1px] bg-zinc-700" />
 
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="/login"
-                className="text-[#6366f1] hover:text-[#a855f7] text-sm font-semibold transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/10 hover:opacity-90 transition-all transform hover:scale-[1.02]"
-              >
-                Get Started
-              </Link>
+            {/* Auth/User Dynamic Section */}
+            <div className="flex items-center gap-4 min-w-[120px] justify-end">
+              {isPending ? (
+                <BiLoaderAlt className="animate-spin text-zinc-400 h-5 w-5" />
+              ) : user ? (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 bg-zinc-900/50 border border-zinc-800 px-3 py-1.5 rounded-xl">
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt={user.name || "User"}
+                        width={24}
+                        height={24}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="bg-zinc-800 p-1 rounded-full text-zinc-400">
+                        <FiUser className="h-4 w-4" />
+                      </div>
+                    )}
+                    <span className="text-zinc-200 text-sm font-medium max-w-[100px] truncate">
+                      {user.name}
+                    </span>
+                  </div>
+                  
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-1.5 text-zinc-400 hover:text-red-400 text-sm font-medium transition-colors cursor-pointer"
+                  >
+                    <FiLogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-[#6366f1] hover:text-[#a855f7] text-sm font-semibold transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/10 hover:opacity-90 transition-all transform hover:scale-[1.02]"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -102,21 +148,62 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
+          
           <div className="pt-4 border-t border-zinc-800 flex flex-col gap-3">
-            <Link
-              href="/login"
-              className="text-center text-zinc-400 hover:text-white text-sm font-medium py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/register"
-              className="text-center bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium py-2.5 rounded-xl"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Get Started
-            </Link>
+            {isPending ? (
+              <div className="flex justify-center py-2">
+                <BiLoaderAlt className="animate-spin text-zinc-400 h-5 w-5" />
+              </div>
+            ) : user ? (
+              <>
+                <div className="flex items-center gap-3 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt={user.name || "User"}
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="bg-zinc-800 p-1.5 rounded-full text-zinc-400">
+                      <FiUser className="h-5 w-5" />
+                    </div>
+                  )}
+                  <span className="text-zinc-200 text-base font-medium truncate">
+                    {user.name}
+                  </span>
+                </div>
+                
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-800 text-red-400 hover:bg-zinc-800 text-sm font-medium py-2.5 rounded-xl transition-colors w-full"
+                >
+                  <FiLogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-center text-zinc-400 hover:text-white text-sm font-medium py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="text-center bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium py-2.5 rounded-xl"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
