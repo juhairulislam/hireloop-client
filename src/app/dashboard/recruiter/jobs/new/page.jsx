@@ -13,15 +13,11 @@ import {
     ListBox,
     Switch,
     Button,
-    toast
 } from "@heroui/react";
 import { FaBriefcase } from "react-icons/fa6"; 
 import { FiGlobe } from "react-icons/fi";
-import { useRouter } from "next/navigation";
 
 export default function PostJobPage() {
-    const router = useRouter();
-    
     const [mockCompany] = useState({
         name: "Acme Corp (Auto-filled)",
         id: "company_123",
@@ -29,38 +25,17 @@ export default function PostJobPage() {
     });
 
     const [isRemote, setIsRemote] = useState(false);
-    const [errors, setErrors] = useState({});
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!mockCompany.isApproved) {
-            alert("Your company profile must be approved before you can post jobs.");
-            return;
-        }
-
+        // FormData অবজেক্ট তৈরি করা হচ্ছে
         const formData = new FormData(e.currentTarget);
+        
+        // ফর্মের সব টেক্সট এবং সিলেক্ট ফিল্ডের ডেটা অবজেক্টে রূপান্তর
         const data = Object.fromEntries(formData.entries());
 
-        const newErrors = {};
-        if (!data.jobTitle) newErrors.jobTitle = "Job title is required";
-        if (!data.jobCategory) newErrors.jobCategory = "Job category is required";
-        if (!data.jobType) newErrors.jobType = "Job type is required";
-        if (!data.minSalary) newErrors.minSalary = "Minimum salary is required";
-        if (!data.maxSalary) newErrors.maxSalary = "Maximum salary is required";
-        if (!isRemote && !data.location) newErrors.location = "Location is required for non-remote roles";
-        if (!data.deadline) newErrors.deadline = "Application deadline is required";
-        if (!data.responsibilities) newErrors.responsibilities = "Responsibilities are required";
-        if (!data.requirements) newErrors.requirements = "Requirements are required";
-        
-        console.log("Validation errors:", newErrors);
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            return;
-        }
-
-        setErrors({});
-
+        // কনসোলে দেখানোর জন্য ফাইনাল পেলোড তৈরি
         const payload = {
             ...data,
             isRemote,
@@ -69,13 +44,10 @@ export default function PostJobPage() {
             isPubliclyVisible: true,
         };
 
-        const res = await createJob(payload);
-        if (res.insertedId) {
-            toast.success("Job posted successfully!");
-            e.target.reset();
-            setIsRemote(false);
-            router.push("/dashboard/recruiter/jobs");
-        }
+        // ওস্তাদ, এখানে আপনার ফর্মের সব ডেটা কনসোল লগে দেখতে পাবেন
+        console.log("Form Submitted Successfully! Payload Data:", payload);
+        
+        alert("Form submitted! Check your browser console for the data.");
     };
 
     const textInputClass = "w-full text-white bg-[#1c1c1e] border border-zinc-800 hover:bg-[#242426] focus:border-zinc-600 rounded-lg h-12 px-3 text-sm placeholder:text-zinc-600 outline-none transition-all";
@@ -103,7 +75,8 @@ export default function PostJobPage() {
                     </div>
                 </div>
 
-                <Form onSubmit={handleSubmit} className="space-y-8" validationErrors={errors} validationBehavior='aria'>
+                {/* validationBehavior এবং validationErrors সরিয়ে দেওয়া হয়েছে সহজ সাবমিশনের জন্য */}
+                <Form onSubmit={handleSubmit} className="space-y-8">
 
                     <Fieldset className="space-y-6 w-full">
                         <legend className="text-lg font-medium text-zinc-300 border-b border-zinc-900 w-full pb-2 mb-2">
@@ -111,19 +84,17 @@ export default function PostJobPage() {
                         </legend>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <TextField name="jobTitle" isInvalid={!!errors.jobTitle} className="flex flex-col gap-1 w-full" aria-label="Job Title Field">
+                            <TextField name="jobTitle" className="flex flex-col gap-1 w-full" aria-label="Job Title Field">
                                 <Label className="text-zinc-400 font-medium text-sm">Job Title</Label>
                                 <Input placeholder="e.g. Senior Frontend Engineer" className={textInputClass} aria-label="Job Title Input" />
-                                {errors.jobTitle && <FieldError className="text-xs text-danger mt-1">{errors.jobTitle}</FieldError>}
                             </TextField>
 
-                            <Select className={selectBoxClass} name="jobCategory" isInvalid={!!errors.jobCategory} aria-label="Job Category">
+                            <Select className={selectBoxClass} name="jobCategory" aria-label="Job Category">
                                 <Label className="text-zinc-400 font-medium text-sm mb-1 block">Job Category</Label>
                                 <Select.Trigger className={triggerClasses} aria-label="Select Job Category Trigger">
                                     <Select.Value className="text-white placeholder:text-zinc-600" />
                                     <Select.Indicator />
                                 </Select.Trigger>
-                                {errors.jobCategory && <span className="text-xs text-danger mt-1">{errors.jobCategory}</span>}
                                 <Select.Popover className={popoverClasses}>
                                     <ListBox className="outline-none" aria-label="Job Category Options">
                                         <ListBox.Item id="technology" className={listItemClasses} textValue="Technology">Technology</ListBox.Item>
@@ -136,13 +107,12 @@ export default function PostJobPage() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Select className={selectBoxClass} name="jobType" isInvalid={!!errors.jobType} aria-label="Job Type">
+                            <Select className={selectBoxClass} name="jobType" aria-label="Job Type">
                                 <Label className="text-zinc-400 font-medium text-sm mb-1 block">Job Type</Label>
                                 <Select.Trigger className={triggerClasses} aria-label="Select Job Type Trigger">
                                     <Select.Value />
                                     <Select.Indicator />
                                 </Select.Trigger>
-                                {errors.jobType && <span className="text-xs text-danger mt-1">{errors.jobType}</span>}
                                 <Select.Popover className={popoverClasses}>
                                     <ListBox className="outline-none" aria-label="Job Type Options">
                                         <ListBox.Item id="full-time" className={listItemClasses} textValue="Full-time">Full-time</ListBox.Item>
@@ -157,10 +127,10 @@ export default function PostJobPage() {
                                 <div className="col-span-2 space-y-1">
                                     <span className="text-zinc-400 font-medium text-sm block">Salary Range</span>
                                     <div className="flex gap-2">
-                                        <TextField name="minSalary" isInvalid={!!errors.minSalary} className="w-full" aria-label="Minimum Salary Field">
+                                        <TextField name="minSalary" className="w-full" aria-label="Minimum Salary Field">
                                             <Input placeholder="Min" type="number" className={textInputClass} aria-label="Minimum Salary Input" />
                                         </TextField>
-                                        <TextField name="maxSalary" isInvalid={!!errors.maxSalary} className="w-full" aria-label="Maximum Salary Field">
+                                        <TextField name="maxSalary" className="w-full" aria-label="Maximum Salary Field">
                                             <Input placeholder="Max" type="number" className={textInputClass} aria-label="Maximum Salary Input" />
                                         </TextField>
                                     </div>
@@ -202,7 +172,7 @@ export default function PostJobPage() {
                                     </Switch>
                                 </div>
 
-                                <TextField name="location" isInvalid={!isRemote && !!errors.location} className="flex flex-col gap-1 w-full relative" aria-label="Job Location Field">
+                                <TextField name="location" className="flex flex-col gap-1 w-full relative" aria-label="Job Location Field">
                                     <div className="relative flex items-center">
                                         <FiGlobe size={16} className="absolute left-3 text-zinc-600 pointer-events-none z-10" />
                                         <Input
@@ -212,14 +182,12 @@ export default function PostJobPage() {
                                             aria-label="Job Location Input"
                                         />
                                     </div>
-                                    {!isRemote && errors.location && <FieldError className="text-xs text-danger mt-1">{errors.location}</FieldError>}
                                 </TextField>
                             </div>
 
-                            <TextField name="deadline" isInvalid={!!errors.deadline} className="flex flex-col gap-1 w-full" aria-label="Application Deadline Field">
+                            <TextField name="deadline" className="flex flex-col gap-1 w-full" aria-label="Application Deadline Field">
                                 <Label className="text-zinc-400 font-medium text-sm">Application Deadline</Label>
                                 <Input type="date" className={textInputClass} aria-label="Application Deadline Input" />
-                                {errors.deadline && <FieldError className="text-xs text-danger mt-1">{errors.deadline}</FieldError>}
                             </TextField>
                         </div>
                     </Fieldset>
@@ -229,7 +197,7 @@ export default function PostJobPage() {
                             Job Details & Description
                         </legend>
 
-                        <TextField name="responsibilities" isInvalid={!!errors.responsibilities} className="flex flex-col gap-1 w-full" aria-label="Responsibilities Field">
+                        <TextField name="responsibilities" className="flex flex-col gap-1 w-full" aria-label="Responsibilities Field">
                             <Label className="text-zinc-400 font-medium text-sm">Responsibilities</Label>
                             <TextArea
                                 placeholder="Outline the core everyday responsibilities for this role..."
@@ -237,10 +205,9 @@ export default function PostJobPage() {
                                 className={textAreaClass}
                                 aria-label="Responsibilities Input"
                             />
-                            {errors.responsibilities && <FieldError className="text-xs text-danger mt-1">{errors.responsibilities}</FieldError>}
                         </TextField>
 
-                        <TextField name="requirements" isInvalid={!!errors.requirements} className="flex flex-col gap-1 w-full" aria-label="Requirements Field">
+                        <TextField name="requirements" className="flex flex-col gap-1 w-full" aria-label="Requirements Field">
                             <Label className="text-zinc-400 font-medium text-sm">Requirements</Label>
                             <TextArea
                                 placeholder="List required experience, skills, and certifications..."
@@ -248,7 +215,6 @@ export default function PostJobPage() {
                                 className={textAreaClass}
                                 aria-label="Requirements Input"
                             />
-                            {errors.requirements && <FieldError className="text-xs text-danger mt-1">{errors.requirements}</FieldError>}
                         </TextField>
 
                         <TextField name="benefits" className="flex flex-col gap-1 w-full" aria-label="Benefits Field">
