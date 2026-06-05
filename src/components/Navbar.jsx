@@ -148,7 +148,7 @@ export default function Navbar() {
                     </Link>
                     <Link
                       href="/register"
-                      className="bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/10 hover:opacity-90 transition-all transform hover:scale-[1.02]"
+                      className="bg-linear-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/10 hover:opacity-90 transition-all transform hover:scale-[1.02]"
                     >
                       Get Started
                     </Link>
@@ -229,7 +229,7 @@ export default function Navbar() {
                   </Link>
                   <Link
                     href="/register"
-                    className="text-center bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium py-2.5 rounded-xl"
+                    className="text-center bg-linear-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium py-2.5 rounded-xl"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Get Started
