@@ -61,7 +61,7 @@ const DashboardSidebar = () => {
           border-r border-gray-800/40
           p-6
           flex flex-col
-          z-50
+          z-40
           transition-transform duration-300 ease-in-out
           ${
             isOpen
@@ -81,7 +81,7 @@ const DashboardSidebar = () => {
         </div>
 
         {/* User Section */}
-        <div className="flex flex-col items-start gap-2 mb-6 pb-6 border-b border-gray-800/50">
+        <div className="flex flex-col items-start gap-2 mb-6 pb-6 border-b border-gray-800/50 flex-shrink-0">
           <div className="flex items-center gap-3 w-full">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-800 bg-gray-700 flex items-center justify-center flex-shrink-0">
               {user?.image ? (
@@ -112,7 +112,7 @@ const DashboardSidebar = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto min-h-0 pr-1">
           <ul className="space-y-1.5">
             {navLinks.map((link, index) => (
               <li key={index}>
