@@ -29,13 +29,10 @@ export default function PostJobPage() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // FormData অবজেক্ট তৈরি করা হচ্ছে
         const formData = new FormData(e.currentTarget);
         
-        // ফর্মের সব টেক্সট এবং সিলেক্ট ফিল্ডের ডেটা অবজেক্টে রূপান্তর
         const data = Object.fromEntries(formData.entries());
 
-        // কনসোলে দেখানোর জন্য ফাইনাল পেলোড তৈরি
         const payload = {
             ...data,
             isRemote,
@@ -44,7 +41,6 @@ export default function PostJobPage() {
             isPubliclyVisible: true,
         };
 
-        // ওস্তাদ, এখানে আপনার ফর্মের সব ডেটা কনসোল লগে দেখতে পাবেন
         console.log("Form Submitted Successfully! Payload Data:", payload);
         
         alert("Form submitted! Check your browser console for the data.");
@@ -75,7 +71,7 @@ export default function PostJobPage() {
                     </div>
                 </div>
 
-                {/* validationBehavior এবং validationErrors সরিয়ে দেওয়া হয়েছে সহজ সাবমিশনের জন্য */}
+
                 <Form onSubmit={handleSubmit} className="space-y-8">
 
                     <Fieldset className="space-y-6 w-full">
