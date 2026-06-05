@@ -16,6 +16,8 @@ import {
 } from "@heroui/react";
 import { FaBriefcase } from "react-icons/fa6"; 
 import { FiGlobe } from "react-icons/fi";
+import { createJob } from "@/lib/actions/jobs";
+import toast from "react-hot-toast";
 
 export default function PostJobPage() {
     const [mockCompany] = useState({
@@ -26,7 +28,7 @@ export default function PostJobPage() {
 
     const [isRemote, setIsRemote] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -41,9 +43,14 @@ export default function PostJobPage() {
             isPubliclyVisible: true,
         };
 
-        console.log("Form Submitted Successfully! Payload Data:", payload);
-        
-        alert("Form submitted! Check your browser console for the data.");
+
+        const res = await createJob(payload) ;
+
+        if(res.insertedId){
+            toast.success('Job Posted Successfully') ;
+            e.target.reset() ;
+            setIsRemote(false)
+        }
     };
 
     const textInputClass = "w-full text-white bg-[#1c1c1e] border border-zinc-800 hover:bg-[#242426] focus:border-zinc-600 rounded-lg h-12 px-3 text-sm placeholder:text-zinc-600 outline-none transition-all";
