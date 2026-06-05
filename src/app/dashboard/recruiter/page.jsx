@@ -38,7 +38,6 @@ const statsData = [
   },
 ];
 
-// Dark themed StatCard Component
 const StatCard = ({ title, value, icon: Icon, iconColor, bgColor }) => {
   return (
     <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between shadow-lg">
@@ -58,8 +57,8 @@ const RecruiterPage = () => {
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-950 text-slate-100 md:pl-64">
-        <h1 className="text-xl font-semibold animate-pulse">Loading...</h1>
+      <div className="flex items-center justify-center py-12">
+        <h1 className="text-xl font-semibold animate-pulse text-slate-400">Loading...</h1>
       </div>
     );
   }
@@ -67,14 +66,11 @@ const RecruiterPage = () => {
   const user = session?.user;
 
   return (
-    // md:pl-64 layout block fixed visual overlap with sidebar
-    <div className="min-h-screen bg-slate-950 p-6 space-y-6 text-slate-100 md:pl-64">
-      
+    <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">
+        <h1 className="text-2xl font-bold text-slate-100 mt-16 md:mt-1">
           Welcome Back, {user?.name || 'Recruiter'}
         </h1>
-        
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -89,7 +85,6 @@ const RecruiterPage = () => {
           />
         ))}
       </div>
-      
     </div>
   );
 };
