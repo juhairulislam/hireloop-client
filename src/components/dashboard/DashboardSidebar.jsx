@@ -2,22 +2,26 @@
 
 import { useSession } from "@/lib/auth-client";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { FiGrid, FiBriefcase, FiUsers, FiSettings } from "react-icons/fi";
+import { FiGrid, FiBriefcase, FiPlusCircle, FiMessageSquare, FiUser, FiSettings } from "react-icons/fi";
 import { HiMenuAlt2, HiX } from "react-icons/hi";
 
 const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, isPending } = useSession();
+  const pathname = usePathname();
 
   const user = session?.user;
 
   const navLinks = [
-    { name: "Dashboard", icon: <FiGrid />, active: true },
-    { name: "My Company", icon: <FiBriefcase />, active: false },
-    { name: "Manage Jobs", icon: <FiBriefcase />, active: false },
-    { name: "Applications", icon: <FiUsers />, active: false },
-    { name: "Settings", icon: <FiSettings />, active: false },
+    { name: "Home", href: "/dashboard/recruiter", icon: <FiGrid /> },
+    { name: "Jobs", href: "/dashboard/recruiter/jobs", icon: <FiBriefcase /> },
+    { name: "Post a job", href: "/dashboard/recruiter/jobs/new", icon: <FiPlusCircle /> },
+    { name: "Message", href: "/message", icon: <FiMessageSquare /> },
+    { name: "Profile", href: "/profile", icon: <FiUser /> },
+    { name: "Settings", href: "/settings", icon: <FiSettings /> },
   ];
 
   if (isPending) {
@@ -77,7 +81,7 @@ const DashboardSidebar = () => {
             className="h-9 w-9 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white flex items-center justify-center"
           >
             <HiX size={18} />
-          </button>
+          </          button>
         </div>
 
         {/* User Section */}
@@ -114,38 +118,41 @@ const DashboardSidebar = () => {
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto min-h-0 pr-1">
           <ul className="space-y-1.5">
-            {navLinks.map((link, index) => (
-              <li key={index}>
-                <a
-                  href="#"
-                  onClick={() => setIsOpen(false)}
-                  className={`
-                    flex items-center gap-4
-                    px-4 py-3
-                    rounded-xl
-                    text-sm font-medium
-                    transition-all duration-200
-                    ${
-                      link.active
-                        ? "bg-[#1a1f26] text-white border border-zinc-800/50"
-                        : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
-                    }
-                  `}
-                >
-                  <span
-                    className={`text-lg ${
-                      link.active
-                        ? "text-white"
-                        : "text-zinc-500"
-                    }`}
-                  >
-                    {link.icon}
-                  </span>
+            {navLinks.map((link, index) => {
 
-                  <span>{link.name}</span>
-                </a>
-              </li>
-            ))}
+const isActive = pathname === link.href;
+
+              return (
+                <li key={index}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`
+                      flex items-center gap-4
+                      px-4 py-3
+                      rounded-xl
+                      text-sm font-medium
+                      transition-all duration-200
+                      ${
+                        isActive
+                          ? "bg-[#1a1f26] text-white border border-zinc-800/50"
+                          : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
+                      }
+                    `}
+                  >
+                    <span
+                      className={`text-lg ${
+                        isActive ? "text-white" : "text-zinc-500"
+                      }`}
+                    >
+                      {link.icon}
+                    </span>
+
+                    <span>{link.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </aside>
