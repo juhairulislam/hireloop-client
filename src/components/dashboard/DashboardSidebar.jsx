@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { FiGrid, FiBriefcase, FiPlusCircle, FiMessageSquare, FiUser, FiSettings } from "react-icons/fi";
+// Import correct icons from 'fi'
+import { FiGrid, FiBriefcase, FiPlusCircle, FiUsers, FiMessageSquare, FiUser, FiSettings } from "react-icons/fi";
 import { HiMenuAlt2, HiX } from "react-icons/hi";
 
 const DashboardSidebar = () => {
@@ -19,6 +20,8 @@ const DashboardSidebar = () => {
     { name: "Home", href: "/dashboard/recruiter", icon: <FiGrid /> },
     { name: "Jobs", href: "/dashboard/recruiter/jobs", icon: <FiBriefcase /> },
     { name: "Post a job", href: "/dashboard/recruiter/jobs/new", icon: <FiPlusCircle /> },
+    { name: "Company profile", href: "/dashboard/recruiter/company", icon: <FiUsers /> }, // Used FiUsers icon
+
     { name: "Message", href: "/message", icon: <FiMessageSquare /> },
     { name: "Profile", href: "/profile", icon: <FiUser /> },
     { name: "Settings", href: "/settings", icon: <FiSettings /> },
@@ -81,7 +84,7 @@ const DashboardSidebar = () => {
             className="h-9 w-9 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white flex items-center justify-center"
           >
             <HiX size={18} />
-          </          button>
+          </button>
         </div>
 
         {/* User Section */}
@@ -119,8 +122,7 @@ const DashboardSidebar = () => {
         <nav className="flex-1 overflow-y-auto min-h-0 pr-1">
           <ul className="space-y-1.5">
             {navLinks.map((link, index) => {
-
-const isActive = pathname === link.href;
+              const isActive = pathname === link.href;
 
               return (
                 <li key={index}>
