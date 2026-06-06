@@ -17,7 +17,7 @@ export default function Navbar() {
   const user = session?.user;
 
   const menuItems = [
-    { label: "Browse Jobs", href: "/jobs" },
+    { label: "Browse Jobs", href:"/dashboard/recruiter/jobs" },
     { label: "Company", href: "/company" },
     { label: "Pricing", href: "/pricing" },
   ];
