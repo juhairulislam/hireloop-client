@@ -2,7 +2,6 @@ import React from 'react';
 import { getJobById } from '@/lib/api/jobs';
 import { Button, Link } from '@heroui/react';
 import { MapPin, Briefcase, CircleDollar, Calendar, ArrowUpRight } from '@gravity-ui/icons';
-import Image from 'next/image';
 
 const Page = async ({ params }) => {
     const { id } = await params;
@@ -45,9 +44,7 @@ const Page = async ({ params }) => {
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
                             {job.companyLogo && (
-                                <Image
-                                width={14}
-                                height={14}
+                                <img
                                     src={job.companyLogo}
                                     alt={`${job.companyName} Branding`}
                                     className="w-14 h-14 object-contain bg-zinc-900 border border-zinc-800 p-2 rounded-xl"
@@ -146,14 +143,13 @@ const Page = async ({ params }) => {
                     
 
                     {/* Action Button: Apply Routing Link Container */}
-                    <Button
-                        as={Link}
+                    <Link
                         href={`/jobs/${id}/apply`}
                         className="w-full bg-purple-600 hover:bg-purple-500 text-white font-medium py-6 rounded-xl shadow-lg transition-colors flex items-center justify-center gap-2"
                         endContent={<ArrowUpRight className="w-4 h-4" />}
                     >
                         Apply For This Job
-                    </Button>
+                    </Link>
                 </aside>
 
             </div>
