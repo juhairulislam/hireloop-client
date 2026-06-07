@@ -34,39 +34,102 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
     const [logoUrl, setLogoUrl] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
-    const handleLogoUpload = async (e) => {
-        const file = e.target.files;
-        if (!file) return;
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
 
-        if (file.size > 5 * 1024 * 1024) {
-            setErrors(prev => ({ ...prev, logo: "File size exceeds 5MB limit" }));
-            return;
-        }
+    if (!file) {
+        setErrors(prev => ({
+            ...prev,
+            logo: "No valid file selected"
+        }));
+        return;
+    }
 
-        setIsUploading(true);
-        const formData = new FormData();
-        formData.append('image', file);
+    if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({
+            ...prev,
+            logo: "File size exceeds 5MB limit"
+        }));
+        return;
+    }
 
-        try {
-            const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API; 
-            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            
-            if (data.success) {
-                setLogoUrl(data.data.url);
-                setErrors(prev => ({ ...prev, logo: null }));
-            } else {
-                setErrors(prev => ({ ...prev, logo: "Upload failed. Try again." }));
+    setIsUploading(true);
+
+    try {
+        const reader = new FileReader();
+
+        reader.onloadend = async () => {
+            try {
+                const result = reader.result;
+
+                if (typeof result !== "string") {
+                    throw new Error("Invalid image data");
+                }
+
+                const base64Image = result.split(",")[1];
+
+                const formData = new FormData();
+                formData.append("image", base64Image);
+
+                const response = await fetch(
+                    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`,
+                    {
+                        method: "POST",
+                        body: formData,
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setLogoUrl(data.data.display_url || data.data.url);
+                    setErrors(prev => ({
+                        ...prev,
+                        logo: null
+                    }));
+                } else {
+                    console.error("IMGBB Error:", data);
+
+                    setErrors(prev => ({
+                        ...prev,
+                        logo:
+                            data?.error?.message ||
+                            "Upload failed. Try again."
+                    }));
+                }
+            } catch (error) {
+                console.error(error);
+
+                setErrors(prev => ({
+                    ...prev,
+                    logo: "Upload failed. Try again."
+                }));
+            } finally {
+                setIsUploading(false);
             }
-        } catch (err) {
-            setErrors(prev => ({ ...prev, logo: "Network error during logo upload" }));
-        } finally {
+        };
+
+        reader.onerror = () => {
+            setErrors(prev => ({
+                ...prev,
+                logo: "Failed to read image"
+            }));
+
             setIsUploading(false);
-        }
-    };
+        };
+
+        reader.readAsDataURL(file);
+    } catch (error) {
+        console.error(error);
+
+        setErrors(prev => ({
+            ...prev,
+            logo: "Upload failed. Try again."
+        }));
+
+        setIsUploading(false);
+    }
+};
 
     const handleSubmit = async (e) => {
         e.preventDefault();
