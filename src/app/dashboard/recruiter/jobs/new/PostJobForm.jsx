@@ -103,7 +103,7 @@ export default function PostJobForm({ company }) {
 
                     {/* Company verification status panel */}
                     <div className="mt-4 inline-flex items-center gap-2 bg-zinc-900/50 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-400">
-                        {/* Gravity UI Briefcase পরিবর্তন করে FaBriefcase ব্যবহার করা হয়েছে */}
+                        {/* Gravity UI Briefcase পরিবর্তন করে FaBriefcase ব্যবহার করা হয়েছে */}
                         <FaBriefcase size={14} className="text-zinc-500" />
                         Posting as: <span className="font-semibold text-zinc-300">{company.name}</span>
                         <span className="text-emerald-500 font-medium bg-emerald-950/30 px-1.5 py-0.5 rounded border border-emerald-900/50">Approved</span>
@@ -126,7 +126,7 @@ export default function PostJobForm({ company }) {
                                 {errors.jobTitle && <FieldError className="text-xs text-danger mt-1">{errors.jobTitle}</FieldError>}
                             </TextField>
 
-                            <Select className={selectBoxClass} name="jobCategory" isInvalid={!!errors.jobCategory}>
+                            <Select className={selectBoxClass} name="jobCategory" aria-label="Job Category" isInvalid={!!errors.jobCategory}>
                                 <Label className="text-zinc-400 font-medium text-sm mb-1 block">Job Category</Label>
                                 <Select.Trigger className={triggerClasses}>
                                     <Select.Value className="text-white placeholder:text-zinc-600" />
@@ -134,7 +134,7 @@ export default function PostJobForm({ company }) {
                                 </Select.Trigger>
                                 {errors.jobCategory && <span className="text-xs text-danger mt-1">{errors.jobCategory}</span>}
                                 <Select.Popover className={popoverClasses}>
-                                    <ListBox className="outline-none">
+                                    <ListBox className="outline-none" aria-label="Job Category Options">
                                         <ListBox.Item id="technology" className={listItemClasses} textValue="Technology">Technology</ListBox.Item>
                                         <ListBox.Item id="design" className={listItemClasses} textValue="Design">Design</ListBox.Item>
                                         <ListBox.Item id="marketing" className={listItemClasses} textValue="Marketing">Marketing</ListBox.Item>
@@ -145,7 +145,7 @@ export default function PostJobForm({ company }) {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Select className={selectBoxClass} name="jobType" isInvalid={!!errors.jobType}>
+                            <Select className={selectBoxClass} name="jobType" aria-label="Job Type" isInvalid={!!errors.jobType}>
                                 <Label className="text-zinc-400 font-medium text-sm mb-1 block">Job Type</Label>
                                 <Select.Trigger className={triggerClasses}>
                                     <Select.Value />
@@ -153,7 +153,7 @@ export default function PostJobForm({ company }) {
                                 </Select.Trigger>
                                 {errors.jobType && <span className="text-xs text-danger mt-1">{errors.jobType}</span>}
                                 <Select.Popover className={popoverClasses}>
-                                    <ListBox className="outline-none">
+                                    <ListBox className="outline-none" aria-label="Job Type Options">
                                         <ListBox.Item id="full-time" className={listItemClasses} textValue="Full-time">Full-time</ListBox.Item>
                                         <ListBox.Item id="part-time" className={listItemClasses} textValue="Part-time">Part-time</ListBox.Item>
                                         <ListBox.Item id="contract" className={listItemClasses} textValue="Contract">Contract</ListBox.Item>
@@ -176,13 +176,13 @@ export default function PostJobForm({ company }) {
                                     </div>
                                 </div>
 
-                                <Select className="w-full mt-6" name="currency" defaultSelectedKeys={["USD"]}>
+                                <Select className="w-full mt-6" name="currency" aria-label="Currency" defaultSelectedKeys={["USD"]}>
                                     <Select.Trigger className={triggerClasses}>
                                         <Select.Value />
                                         <Select.Indicator />
                                     </Select.Trigger>
                                     <Select.Popover className={popoverClasses}>
-                                        <ListBox className="outline-none">
+                                        <ListBox className="outline-none" aria-label="Currency Options">
                                             <ListBox.Item id="USD" className={listItemClasses} textValue="USD">USD ($)</ListBox.Item>
                                             <ListBox.Item id="EUR" className={listItemClasses} textValue="EUR">EUR (€)</ListBox.Item>
                                             <ListBox.Item id="GBP" className={listItemClasses} textValue="GBP">GBP (£)</ListBox.Item>
@@ -214,7 +214,7 @@ export default function PostJobForm({ company }) {
 
                                 <TextField name="location" isInvalid={!isRemote && !!errors.location} className="flex flex-col gap-1 w-full relative">
                                     <div className="relative flex items-center">
-                                        {/* Gravity UI Globe পরিবর্তন করে FaGlobe ব্যবহার করা হয়েছে */}
+                                        {/* Gravity UI Globe পরিবর্তন করে FaGlobe ব্যবহার করা হয়েছে */}
                                         <FaGlobe size={16} className="absolute left-3 text-zinc-600 pointer-events-none z-10" />
                                         <Input
                                             placeholder={isRemote ? "Global / Remote" : "e.g. Austin, TX"}
