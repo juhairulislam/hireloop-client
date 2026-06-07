@@ -45,7 +45,7 @@ const RecruiterJobs = async () => {
                 /* Render Table As Usual if Data Exists */
                 <Table aria-label="Company jobs management table">
                     <Table.ResizableContainer>
-                        <Table.Content className="min-w-[800px]">
+                        <Table.Content className="min-w-[800px]" aria-label="Company jobs management table list">
                             <Table.Header>
                                 <Table.Column isRowHeader defaultWidth="2fr" id="jobTitle" minWidth={200}>
                                     Job Title
