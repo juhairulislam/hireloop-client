@@ -126,15 +126,15 @@ export default function PostJobForm({ company }) {
                                 {errors.jobTitle && <FieldError className="text-xs text-danger mt-1">{errors.jobTitle}</FieldError>}
                             </TextField>
 
-                            <Select className={selectBoxClass} name="jobCategory" aria-label="Job Category" isInvalid={!!errors.jobCategory}>
-                                <Label className="text-zinc-400 font-medium text-sm mb-1 block">Job Category</Label>
-                                <Select.Trigger className={triggerClasses}>
+                            <Select className={selectBoxClass} name="jobCategory" id="job-category-select" aria-label="Job Category" isInvalid={!!errors.jobCategory}>
+                                <Label id="job-category-label" className="text-zinc-400 font-medium text-sm mb-1 block">Job Category</Label>
+                                <Select.Trigger className={triggerClasses} aria-labelledby="job-category-label" aria-label="Job Category Trigger">
                                     <Select.Value className="text-white placeholder:text-zinc-600" />
                                     <Select.Indicator />
                                 </Select.Trigger>
                                 {errors.jobCategory && <span className="text-xs text-danger mt-1">{errors.jobCategory}</span>}
                                 <Select.Popover className={popoverClasses}>
-                                    <ListBox className="outline-none" aria-label="Job Category Options">
+                                    <ListBox className="outline-none" aria-labelledby="job-category-label" aria-label="Job Category Options">
                                         <ListBox.Item id="technology" className={listItemClasses} textValue="Technology">Technology</ListBox.Item>
                                         <ListBox.Item id="design" className={listItemClasses} textValue="Design">Design</ListBox.Item>
                                         <ListBox.Item id="marketing" className={listItemClasses} textValue="Marketing">Marketing</ListBox.Item>
@@ -145,15 +145,15 @@ export default function PostJobForm({ company }) {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Select className={selectBoxClass} name="jobType" aria-label="Job Type" isInvalid={!!errors.jobType}>
-                                <Label className="text-zinc-400 font-medium text-sm mb-1 block">Job Type</Label>
-                                <Select.Trigger className={triggerClasses}>
+                            <Select className={selectBoxClass} name="jobType" id="job-type-select" aria-label="Job Type" isInvalid={!!errors.jobType}>
+                                <Label id="job-type-label" className="text-zinc-400 font-medium text-sm mb-1 block">Job Type</Label>
+                                <Select.Trigger className={triggerClasses} aria-labelledby="job-type-label" aria-label="Job Type Trigger">
                                     <Select.Value />
                                     <Select.Indicator />
                                 </Select.Trigger>
                                 {errors.jobType && <span className="text-xs text-danger mt-1">{errors.jobType}</span>}
                                 <Select.Popover className={popoverClasses}>
-                                    <ListBox className="outline-none" aria-label="Job Type Options">
+                                    <ListBox className="outline-none" aria-labelledby="job-type-label" aria-label="Job Type Options">
                                         <ListBox.Item id="full-time" className={listItemClasses} textValue="Full-time">Full-time</ListBox.Item>
                                         <ListBox.Item id="part-time" className={listItemClasses} textValue="Part-time">Part-time</ListBox.Item>
                                         <ListBox.Item id="contract" className={listItemClasses} textValue="Contract">Contract</ListBox.Item>
@@ -165,19 +165,19 @@ export default function PostJobForm({ company }) {
                             {/* Inline layout grouping for Salary and Currency mapping */}
                             <div className="grid grid-cols-3 gap-2">
                                 <div className="col-span-2 space-y-1">
-                                    <span className="text-zinc-400 font-medium text-sm block">Salary Range</span>
+                                    <span id="salary-range-label" className="text-zinc-400 font-medium text-sm block">Salary Range</span>
                                     <div className="flex gap-2">
-                                        <TextField name="minSalary" isInvalid={!!errors.minSalary} className="w-full">
-                                            <Input placeholder="Min" type="number" className={textInputClass} />
+                                        <TextField name="minSalary" isInvalid={!!errors.minSalary} className="w-full" aria-labelledby="salary-range-label">
+                                            <Input placeholder="Min" type="number" className={textInputClass} aria-label="Minimum Salary" />
                                         </TextField>
-                                        <TextField name="maxSalary" isInvalid={!!errors.maxSalary} className="w-full">
-                                            <Input placeholder="Max" type="number" className={textInputClass} />
+                                        <TextField name="maxSalary" isInvalid={!!errors.maxSalary} className="w-full" aria-labelledby="salary-range-label">
+                                            <Input placeholder="Max" type="number" className={textInputClass} aria-label="Maximum Salary" />
                                         </TextField>
                                     </div>
                                 </div>
 
-                                <Select className="w-full mt-6" name="currency" aria-label="Currency" defaultSelectedKeys={["USD"]}>
-                                    <Select.Trigger className={triggerClasses}>
+                                <Select className="w-full mt-6" name="currency" id="currency-select" aria-label="Currency" defaultSelectedKeys={["USD"]}>
+                                    <Select.Trigger className={triggerClasses} aria-label="Currency Trigger">
                                         <Select.Value />
                                         <Select.Indicator />
                                     </Select.Trigger>
@@ -195,13 +195,14 @@ export default function PostJobForm({ company }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className="text-zinc-400 font-medium text-sm">Location</span>
+                                    <span id="location-label" className="text-zinc-400 font-medium text-sm">Location</span>
 
                                     {/* Updated Switch using v3 Compound Component Syntax */}
                                     <Switch
                                         isSelected={isRemote}
                                         onChange={setIsRemote}
                                         size="sm"
+                                        aria-label="Toggle Remote Option"
                                     >
                                         <Switch.Control className="bg-zinc-800 data-[selected=true]:bg-white">
                                             <Switch.Thumb className="bg-zinc-400 data-[selected=true]:bg-black" />
@@ -212,7 +213,7 @@ export default function PostJobForm({ company }) {
                                     </Switch>
                                 </div>
 
-                                <TextField name="location" isInvalid={!isRemote && !!errors.location} className="flex flex-col gap-1 w-full relative">
+                                <TextField name="location" isInvalid={!isRemote && !!errors.location} className="flex flex-col gap-1 w-full relative" aria-labelledby="location-label">
                                     <div className="relative flex items-center">
                                         {/* Gravity UI Globe পরিবর্তন করে FaGlobe ব্যবহার করা হয়েছে */}
                                         <FaGlobe size={16} className="absolute left-3 text-zinc-600 pointer-events-none z-10" />
@@ -220,6 +221,7 @@ export default function PostJobForm({ company }) {
                                             placeholder={isRemote ? "Global / Remote" : "e.g. Austin, TX"}
                                             disabled={isRemote}
                                             className={`${textInputClass} pl-10`}
+                                            aria-label="Job Location Input"
                                         />
                                     </div>
                                     {!isRemote && errors.location && <FieldError className="text-xs text-danger mt-1">{errors.location}</FieldError>}
