@@ -1,12 +1,15 @@
 import { getCompanyJobs } from '@/lib/api/jobs';
 import React from 'react';
 import { Table, Chip, Button, Tooltip } from "@heroui/react";
-import { LuEye, LuPencil, LuTrash2 } from "react-icons/lu"; 
+// Assuming Gravity Icons maps to standard lucide equivalents; adjust paths if using a custom package
+import { Eye, Edit2, Trash2 } from "lucide-react"; 
+import { getLoggedInRecruiterCompany } from '@/lib/api/companies';
 
 const RecruiterJobs = async () => {
-    const companyId = 'company_123'; 
-    const jobs = await getCompanyJobs(companyId) || []; 
+    const company = await getLoggedInRecruiterCompany();
+    const jobs = await getCompanyJobs(company._id) || []; 
 
+    // Helper to determine status chip coloring
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'active':
@@ -27,7 +30,7 @@ const RecruiterJobs = async () => {
 
             <Table aria-label="Company jobs management table">
                 <Table.ResizableContainer>
-                    <Table.Content aria-label="Company jobs management table" className="min-w-[800px]">
+                    <Table.Content className="min-w-[800px]">
                         <Table.Header>
                             <Table.Column isRowHeader defaultWidth="2fr" id="jobTitle" minWidth={200}>
                                 Job Title
@@ -53,12 +56,14 @@ const RecruiterJobs = async () => {
                         <Table.Body emptyContent={"No jobs found for this company."}>
                             {jobs.map((job) => (
                                 <Table.Row key={job._id?.$oid || job._id}>
+                                    {/* Job Title */}
                                     <Table.Cell>
                                         <div className="font-medium text-default-800">
                                             {job.jobTitle}
                                         </div>
                                     </Table.Cell>
 
+                                    {/* Type / Category */}
                                     <Table.Cell>
                                         <div className="flex flex-col gap-0.5">
                                             <span className="text-sm capitalize font-medium">{job.jobType}</span>
@@ -66,12 +71,14 @@ const RecruiterJobs = async () => {
                                         </div>
                                     </Table.Cell>
 
+                                    {/* Location */}
                                     <Table.Cell>
                                         <span className="text-sm text-default-600">
                                             {job.isRemote ? "Remote" : job.location}
                                         </span>
                                     </Table.Cell>
 
+                                    {/* Status */}
                                     <Table.Cell>
                                         <Chip 
                                             color={getStatusColor(job.status)} 
@@ -83,6 +90,7 @@ const RecruiterJobs = async () => {
                                         </Chip>
                                     </Table.Cell>
 
+                                    {/* Actions */}
                                     <Table.Cell>
                                         <div className="relative flex items-center gap-2">
                                             <Tooltip content="Video Details">
@@ -92,7 +100,7 @@ const RecruiterJobs = async () => {
                                                     variant="light" 
                                                     aria-label="View video details"
                                                 >
-                                                    <LuEye className="text-default-400 w-4 h-4" />
+                                                    <Eye className="text-default-400 w-4 h-4" />
                                                 </Button>
                                             </Tooltip>
                                             <Tooltip content="Edit Job">
@@ -102,7 +110,7 @@ const RecruiterJobs = async () => {
                                                     variant="light" 
                                                     aria-label="Edit job"
                                                 >
-                                                    <LuPencil className="text-default-400 w-4 h-4" />
+                                                    <Edit2 className="text-default-400 w-4 h-4" />
                                                 </Button>
                                             </Tooltip>
                                             <Tooltip content="Delete Job">
@@ -113,7 +121,7 @@ const RecruiterJobs = async () => {
                                                     color="danger"
                                                     aria-label="Delete job"
                                                 >
-                                                    <LuTrash2 className="text-danger w-4 h-4" />
+                                                    <Trash2 className="text-danger w-4 h-4" />
                                                 </Button>
                                             </Tooltip>
                                         </div>
