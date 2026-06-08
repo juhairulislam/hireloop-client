@@ -13,7 +13,7 @@ export async function POST() {
       line_items: [
         {
           // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price: '{{PRICE_ID}}',
+          price: 'price_1Tg0fWDJuF3ZnQo8MIIYXS4I',
           quantity: 1,
         },
       ],
