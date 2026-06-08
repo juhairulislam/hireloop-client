@@ -220,14 +220,14 @@ export default function Navbar() {
             ) : (
               <>
                 <Link
-                  href="/login"
+                  href="/signin"
                   className="text-center text-zinc-400 hover:text-white text-sm font-medium py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In
                 </Link>
                 <Link
-                  href="/register"
+                  href="/signup"
                   className="text-center bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium py-2.5 rounded-xl"
                   onClick={() => setIsMenuOpen(false)}
                 >
