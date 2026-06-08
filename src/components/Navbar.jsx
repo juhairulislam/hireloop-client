@@ -19,7 +19,7 @@ export default function Navbar() {
   const menuItems = [
     { label: "Browse Jobs", href:"/jobs" },
     { label: "Company", href: "/company" },
-    { label: "Pricing", href: "/pricing" },
+    { label: "Pricing", href: "/plans" },
   ];
 
   const handleLogout = async () => {
