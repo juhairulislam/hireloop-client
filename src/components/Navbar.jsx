@@ -140,13 +140,13 @@ export default function Navbar() {
               ) : (
                 <>
                   <Link
-                    href="/login"
+                    href="/signin"
                     className="text-[#6366f1] hover:text-[#a855f7] text-sm font-semibold transition-colors"
                   >
                     Sign In
                   </Link>
                   <Link
-                    href="/register"
+                    href="/signup"
                     className="bg-gradient-to-r from-[#5b45ff] to-[#8b5cf6] text-white text-sm font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/10 hover:opacity-90 transition-all transform hover:scale-[1.02]"
                   >
                     Get Started
