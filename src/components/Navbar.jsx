@@ -49,7 +49,7 @@ export default function Navbar() {
 
           {/* Left Side: Mobile Menu Button & Logo */}
           <div className="flex items-center gap-4">
-            {/* Mobile Menu Toggle Button */}
+
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               type="button"
@@ -81,7 +81,7 @@ export default function Navbar() {
 
           {/* Right Side: Navigation Links & Auth/User Content */}
           <div className="hidden sm:flex items-center gap-6 ml-auto">
-            {/* Desktop Navigation Links */}
+
             <div className="flex items-center space-x-8 mr-2">
               {menuItems.map((item, index) => (
                 <Link
