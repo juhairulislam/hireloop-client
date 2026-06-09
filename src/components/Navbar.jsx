@@ -7,20 +7,35 @@ import { HiBars3, HiXMark } from "react-icons/hi2";
 import { BiLoaderAlt } from "react-icons/bi";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { authClient, useSession } from "@/lib/auth-client";
-import { toast } from "react-hot-toast"; 
+import { toast } from "react-hot-toast";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false); 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { data: session, isPending } = useSession();
 
   const user = session?.user;
 
-  const menuItems = [
-    { label: "Browse Jobs", href:"/jobs" },
-    { label: "Company", href: "/company" },
+  // Base navigation links
+  const navLinks = [
+    { label: "Browse Jobs", href: "/jobs" },
+    { label: "Companies", href: "/companies" },
     { label: "Pricing", href: "/plans" },
   ];
+
+  // Dashboard routing logic based on user role
+  const dashboardLinks = {
+    seeker: "/dashboard/seeker",
+    recruiter: "/dashboard/recruiter",
+    admin: "/dashboard/admin",
+  };
+
+  if (user?.email) {
+    navLinks.push({
+      label: "Dashboard",
+      href: dashboardLinks[user?.role || "seeker"],
+    });
+  }
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
@@ -31,7 +46,6 @@ export default function Navbar() {
     try {
       await authClient.signOut();
       toast.success("Logged out successfully!", { id: toastId });
-      
 
       setTimeout(() => {
         window.location.reload();
@@ -46,10 +60,9 @@ export default function Navbar() {
     <nav className="bg-[#121212] border-b border-zinc-800 fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-
+          
           {/* Left Side: Mobile Menu Button & Logo */}
           <div className="flex items-center gap-4">
-
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               type="button"
@@ -81,15 +94,14 @@ export default function Navbar() {
 
           {/* Right Side: Navigation Links & Auth/User Content */}
           <div className="hidden sm:flex items-center gap-6 ml-auto">
-
             <div className="flex items-center space-x-8 mr-2">
-              {menuItems.map((item, index) => (
+              {navLinks.map((link, index) => (
                 <Link
                   key={index}
-                  href={item.href}
+                  href={link.href}
                   className="text-zinc-400 hover:text-white text-sm font-medium transition-colors"
                 >
-                  {item.label}
+                  {link.label}
                 </Link>
               ))}
             </div>
@@ -151,7 +163,7 @@ export default function Navbar() {
                   >
                     Get Started
                   </Link>
-                </                >
+                </>
               )}
             </div>
           </div>
@@ -162,14 +174,14 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       {isMenuOpen && (
         <div id="mobile-menu" className="sm:hidden bg-[#121212] border-b border-zinc-800 px-4 pt-2 pb-4 space-y-1">
-          {menuItems.map((item, index) => (
+          {navLinks.map((link, index) => (
             <Link
               key={index}
-              href={item.href}
+              href={link.href}
               className="block text-zinc-300 hover:text-white hover:bg-zinc-800 px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              {item.label}
+              {link.label}
             </Link>
           ))}
 
