@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import toast from "react-hot-toast";
-
 import { 
     Form, 
     Fieldset, 
@@ -13,12 +11,13 @@ import {
     FieldError, 
     Select, 
     ListBox, 
-    Button
+    Button, 
+    toast
 } from '@heroui/react';
-import { FiUploadCloud, FiGlobe, FiArrowRight, FiEdit2, FiChevronDown } from 'react-icons/fi';
-import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
+import { ArrowUpToLine, Globe, Factory, ArrowRight, Pencil, ChevronDown } from '@gravity-ui/icons';
 import { createCompany } from '@/lib/actions/companies';
 
+// Layout Shared Style Constants matching your design image
 const textInputClass = "w-full bg-zinc-900/50 border border-zinc-800 text-white rounded-lg px-3 py-2.5 outline-none placeholder:text-zinc-600 focus:border-zinc-700 transition";
 const selectBoxClass = "w-full flex flex-col gap-1";
 const triggerClasses = "w-full bg-zinc-900/50 border border-zinc-800 text-white rounded-lg px-3 py-2.5 flex items-center justify-between outline-none data-[hover=true]:border-zinc-700";
@@ -27,110 +26,53 @@ const listItemClasses = "text-zinc-300 px-3 py-2 rounded-md cursor-pointer hover
 const textAreaClass = "w-full bg-zinc-900/50 border border-zinc-800 text-white rounded-lg p-3 outline-none placeholder:text-zinc-600 focus:border-zinc-700 transition resize-none";
 
 export default function CompanyProfile({ recruiter, recruiterCompany }) {
-    const [company, setCompany] = useState(recruiterCompany);
+    // 1. Core State
+    const [company, setCompany] = useState(recruiterCompany); // Keeps null initially to showcase empty template structure
     const [isEditing, setIsEditing] = useState(false);
     const [errors, setErrors] = useState({});
     
+    // Auxiliary Upload States
     const [logoUrl, setLogoUrl] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
-  const handleLogoUpload = async (e) => {
-    const file = e.target.files?.[0];
+    // 2. Client side Imgbb Upload Handler
+    const handleLogoUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    if (!file) {
-        setErrors(prev => ({
-            ...prev,
-            logo: "No valid file selected"
-        }));
-        return;
-    }
+        // Simple Validation
+        if (file.size > 5 * 1024 * 1024) {
+            setErrors(prev => ({ ...prev, logo: "File size exceeds 5MB limit" }));
+            return;
+        }
 
-    if (file.size > 5 * 1024 * 1024) {
-        setErrors(prev => ({
-            ...prev,
-            logo: "File size exceeds 5MB limit"
-        }));
-        return;
-    }
+        setIsUploading(true);
+        const formData = new FormData();
+        formData.append('image', file);
 
-    setIsUploading(true);
-
-    try {
-        const reader = new FileReader();
-
-        reader.onloadend = async () => {
-            try {
-                const result = reader.result;
-
-                if (typeof result !== "string") {
-                    throw new Error("Invalid image data");
-                }
-
-                const base64Image = result.split(",")[1];
-
-                const formData = new FormData();
-                formData.append("image", base64Image);
-
-                const response = await fetch(
-                    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`,
-                    {
-                        method: "POST",
-                        body: formData,
-                    }
-                );
-
-                const data = await response.json();
-
-                if (data.success) {
-                    setLogoUrl(data.data.display_url || data.data.url);
-                    setErrors(prev => ({
-                        ...prev,
-                        logo: null
-                    }));
-                } else {
-                    console.error("IMGBB Error:", data);
-
-                    setErrors(prev => ({
-                        ...prev,
-                        logo:
-                            data?.error?.message ||
-                            "Upload failed. Try again."
-                    }));
-                }
-            } catch (error) {
-                console.error(error);
-
-                setErrors(prev => ({
-                    ...prev,
-                    logo: "Upload failed. Try again."
-                }));
-            } finally {
-                setIsUploading(false);
+        try {
+            // Replace with your real IMGBB API key environmental variable injection
+            const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API; 
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                setLogoUrl(data.data.url);
+                setErrors(prev => ({ ...prev, logo: null }));
+            } else {
+                setErrors(prev => ({ ...prev, logo: "Upload failed. Try again." }));
             }
-        };
-
-        reader.onerror = () => {
-            setErrors(prev => ({
-                ...prev,
-                logo: "Failed to read image"
-            }));
-
+        } catch (err) {
+            setErrors(prev => ({ ...prev, logo: "Network error during logo upload" }));
+        } finally {
             setIsUploading(false);
-        };
+        }
+    };
 
-        reader.readAsDataURL(file);
-    } catch (error) {
-        console.error(error);
-
-        setErrors(prev => ({
-            ...prev,
-            logo: "Upload failed. Try again."
-        }));
-
-        setIsUploading(false);
-    }
-};
-
+    // 3. Submit Profile Form Data
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -142,6 +84,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         const employeeCount = formData.get('employeeCount');
         const description = formData.get('description');
 
+        // Simple validation checks
         const newErrors = {};
         if (!companyName) newErrors.companyName = "Company name is required";
         if (!websiteUrl) newErrors.websiteUrl = "Website link is required";
@@ -152,6 +95,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
             return;
         }
 
+        // Commit state updates
         const newCompanyData = {
             name: companyName,
             websiteUrl,
@@ -160,8 +104,9 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
             employeeCount: employeeCount || '1-10 employees',
             description,
             logo: logoUrl || (company ? company.logo : ''),
-            status: company ? company.status : 'Pending',
-            recruiterId: recruiter.id
+            status: company && company.status ? company.status : 'Pending', 
+            // Retains status if updating profile details
+            recruiterId: recruiter.id // Associate company with the current recruiter
         }
         setCompany(newCompanyData);
 
@@ -170,14 +115,19 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         const payload = await createCompany(newCompanyData);
 
         if(payload.insertedId) {
+            const savedCompany = {...company, _id: payload.insertedId}
+            setCompany(savedCompany)
             toast.success("Company profile created successfully!");
         }
+
 
         setErrors({});
         setIsEditing(false);
     };
 
+    // 4. State Toggle helper triggers
     const startRegistration = () => {
+        // Hydrate blank template layout states
         setLogoUrl('');
         setIsEditing(true);
     };
@@ -187,11 +137,12 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         setIsEditing(true);
     };
 
+    // --- SUB-VIEW 1: Empty Profile view state ---
     if (!company?._id && !isEditing) {
         return (
             <div className="max-w-2xl mx-auto my-12 bg-zinc-950 border border-zinc-900 rounded-xl p-8 text-center space-y-6">
                 <div className="w-16 h-16 bg-zinc-900/50 rounded-full flex items-center justify-center mx-auto border border-zinc-800">
-                    <HiOutlineBuildingOffice2 size={24} className="text-zinc-500" />
+                    <Factory size={24} className="text-zinc-500" />
                 </div>
                 <div className="space-y-2">
                     <h2 className="text-xl font-semibold text-zinc-200">No Company Registered Yet</h2>
@@ -203,12 +154,13 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                     onPress={startRegistration}
                     className="bg-white text-black font-semibold hover:bg-zinc-200 rounded-lg px-6 h-11 transition-all"
                 >
-                    Register Company <FiArrowRight size={16} className="ml-1" />
+                    Register Company <ArrowRight size={16} className="ml-1" />
                 </Button>
             </div>
         );
     }
 
+    // --- SUB-VIEW 2: Render Presentation Dashboard view mode ---
     if (company && !isEditing) {
         const getStatusStyles = (status) => {
             switch(status) {
@@ -220,13 +172,14 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
 
         return (
             <div className="max-w-4xl mx-auto my-8 bg-zinc-950 border border-zinc-900 rounded-xl p-8 space-y-8">
+                {/* Header Action Grid area */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-900 pb-6">
                     <div className="flex items-center gap-4">
                         {company.logo ? (
                             <img src={company.logo} alt={company.name} className="w-16 h-16 rounded-xl object-contain bg-zinc-900 p-2 border border-zinc-800" />
                         ) : (
                             <div className="w-16 h-16 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
-                                <HiOutlineBuildingOffice2 size={24} className="text-zinc-600" />
+                                <Factory size={24} className="text-zinc-600" />
                             </div>
                         )}
                         <div>
@@ -237,7 +190,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                                 </span>
                             </div>
                             <a href={company.websiteUrl} target="_blank" rel="noreferrer" className="text-sm text-zinc-400 hover:underline flex items-center gap-1 mt-1">
-                                <FiGlobe size={14} className="text-zinc-500" /> {company.websiteUrl}
+                                <Globe size={14} className="text-zinc-500" /> {company.websiteUrl}
                             </a>
                         </div>
                     </div>
@@ -246,10 +199,11 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                         variant="bordered"
                         className="border-zinc-800 text-zinc-300 hover:bg-zinc-900 rounded-lg px-4 font-medium h-10 flex items-center gap-2"
                     >
-                        <FiEdit2 size={14} /> Edit Profile
+                        <Pencil size={14} /> Edit Profile
                     </Button>
                 </div>
 
+                {/* Profile Meta Metrics Grid Section */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-zinc-900/30 border border-zinc-900 p-4 rounded-lg">
                         <span className="text-xs text-zinc-500 uppercase font-semibold block">Industry Category</span>
@@ -265,6 +219,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                     </div>
                 </div>
 
+                {/* Description Box View Section */}
                 {company.description && (
                     <div className="space-y-2">
                         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">About our Vision & Culture</h3>
@@ -277,6 +232,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         );
     }
 
+    // --- SUB-VIEW 3: Form Editing & Registration View Structure ---
     return (
         <div className="max-w-3xl mx-auto my-8 bg-zinc-950 p-8 border border-zinc-900 rounded-xl">
             <Form onSubmit={handleSubmit} className="space-y-8" validationErrors={errors} validationBehavior="aria">
@@ -285,6 +241,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                         {company ? 'Update Company Profile' : 'Configure Workspace Platform'}
                     </legend>
 
+                    {/* ROW 1: Company Name + Industry */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <TextField name="companyName" defaultValue={company?.name || ''} isInvalid={!!errors.companyName} className="flex flex-col gap-1 w-full">
                             <Label className="text-zinc-400 font-medium text-sm">Company Name</Label>
@@ -296,7 +253,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                             <Label className="text-zinc-400 font-medium text-sm mb-1 block">Industry / Category</Label>
                             <Select.Trigger className={triggerClasses}>
                                 <Select.Value className="text-white placeholder:text-zinc-600" />
-                                <Select.Indicator><FiChevronDown size={16} className="text-zinc-500" /></Select.Indicator>
+                                <Select.Indicator><ChevronDown size={16} className="text-zinc-500" /></Select.Indicator>
                             </Select.Trigger>
                             <Select.Popover className={popoverClasses}>
                                 <ListBox className="outline-none">
@@ -309,8 +266,9 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                         </Select>
                     </div>
 
+                    {/* ROW 2: Website URL + Location */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <TextField name="websiteUrl" defaultValue={company?.websiteUrl || ''} isInvalid={!!errors.websiteUrl} className="flex flex-col gap-1 w-full">
+                        <TextField name="websiteUrl" defaultValue={company?.websiteUrl || ''} Linda isInvalid={!!errors.websiteUrl} className="flex flex-col gap-1 w-full">
                             <Label className="text-zinc-400 font-medium text-sm">Website URL</Label>
                             <div className="relative flex items-center">
                                 <span className="absolute left-3 text-zinc-600 text-sm font-medium select-none pointer-events-none border-r border-zinc-800 pr-2">
@@ -324,19 +282,20 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                         <TextField name="location" defaultValue={company?.location || ''} isInvalid={!!errors.location} className="flex flex-col gap-1 w-full">
                             <Label className="text-zinc-400 font-medium text-sm">Location</Label>
                             <div className="relative flex items-center">
-                                <FiGlobe size={16} className="absolute left-3 text-zinc-600 pointer-events-none z-10" />
+                                <Globe size={16} className="absolute left-3 text-zinc-600 pointer-events-none z-10" />
                                 <Input placeholder="City, Country" className={`${textInputClass} pl-10`} />
                             </div>
                             {errors.location && <FieldError className="text-xs text-danger mt-1">{errors.location}</FieldError>}
                         </TextField>
                     </div>
 
+                    {/* ROW 3: Employee Count + Custom File Logo Upload Block */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         <Select className={selectBoxClass} name="employeeCount" defaultSelectedKeys={[company?.employeeCount || '1-10']}>
                             <Label className="text-zinc-400 font-medium text-sm mb-1 block">Employee Count Range</Label>
                             <Select.Trigger className={triggerClasses}>
                                 <Select.Value className="text-white" />
-                                <Select.Indicator><FiChevronDown size={16} className="text-zinc-500" /></Select.Indicator>
+                                <Select.Indicator><ChevronDown size={16} className="text-zinc-500" /></Select.Indicator>
                             </Select.Trigger>
                             <Select.Popover className={popoverClasses}>
                                 <ListBox className="outline-none">
@@ -348,6 +307,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                             </Select.Popover>
                         </Select>
 
+                        {/* Custom Styled Upload Block matching attachment blueprint exactly */}
                         <div className="flex flex-col gap-1 w-full">
                             <span className="text-zinc-400 font-medium text-sm">Company Logo</span>
                             <div className="flex items-center gap-4 mt-1">
@@ -361,7 +321,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                                     {logoUrl ? (
                                         <img src={logoUrl} alt="Logo Preview" className="w-full h-full object-cover" />
                                     ) : (
-                                        <FiUploadCloud size={18} className="text-zinc-400 group-hover:text-zinc-200 transition-colors" />
+                                        <ArrowUpToLine size={18} className="text-zinc-400 group-hover:text-zinc-200 transition-colors" />
                                     )}
                                 </label>
                                 <div className="flex flex-col">
@@ -375,6 +335,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                         </div>
                     </div>
 
+                    {/* ROW 4: Full-Width TextArea Brief Description */}
                     <TextField name="description" defaultValue={company?.description || ''} className="flex flex-col gap-1 w-full">
                         <Label className="text-zinc-400 font-medium text-sm">Brief Description</Label>
                         <TextArea
@@ -385,6 +346,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                     </TextField>
                 </Fieldset>
 
+                {/* Form Navigation Action Area controls */}
                 <div className="flex justify-end gap-3 pt-5 border-t border-zinc-900 w-full">
                     {company && (
                         <Button
