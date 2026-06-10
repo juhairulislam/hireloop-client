@@ -77,7 +77,6 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Logo */}
             <div className="flex-shrink-0">
               <Link href="/" className="flex items-center">
                 <Image
