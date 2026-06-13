@@ -1,23 +1,30 @@
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+import { redirect } from "next/navigation";
+import { auth } from "../auth";
+import { headers } from "next/headers";
 
+export const getUserSession = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers() // some endpoints might require headers
+    })
 
-export const serverFetch = async (path) => {
-    const res = await fetch(`${baseUrl}${path}`);
-    // handle 401, 404, 403
-    return res.json();
+    return session?.user || null;
 }
 
+export const getUserToken = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
 
-export const serverMutation = async (path, data, method = 'POST') => {
-    const res = await fetch(`${baseUrl}${path}`, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
+    return session?.session?.token || null;
+}
 
-    // handle 401, 404, 403
-
-    return res.json();
+export const requireRole = async (role) => {
+    const user = await getUserSession()
+    if (!user) {
+        redirect('/auth/signin')
+    }
+    if (user?.role !== role) {
+        redirect('/unauthorized')
+    }
+    return user;
 }
