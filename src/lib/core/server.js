@@ -1,30 +1,58 @@
 import { redirect } from "next/navigation";
-import { auth } from "../auth";
-import { headers } from "next/headers";
+import { getUserToken } from "./session";
 
-export const getUserSession = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers() // some endpoints might require headers
-    })
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-    return session?.user || null;
+export const authHeader = async () => {
+    const token = await getUserToken();
+    const header = token ? {
+        authorization: `Bearer ${token}`
+    } : {};
+    return header;
 }
 
-export const getUserToken = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    })
-
-    return session?.session?.token || null;
+export const serverFetch = async (path) => {
+    const res = await fetch(`${baseUrl}${path}`);
+    
+    return handleStatusCode(res);
 }
 
-export const requireRole = async (role) => {
-    const user = await getUserSession()
-    if (!user) {
-        redirect('/auth/signin')
-    }
-    if (user?.role !== role) {
+export const protectedFetch = async (path) => {
+    const res = await fetch(`${baseUrl}${path}`,
+        {
+            headers: await authHeader()
+        }
+    );
+
+    // handle 401, 403
+
+    return handleStatusCode(res);
+}
+
+
+export const serverMutation = async (path, data, method = 'POST') => {
+    const res = await fetch(`${baseUrl}${path}`, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            ... await authHeader()
+        },
+        body: JSON.stringify(data),
+    });
+
+
+    return handleStatusCode(res);
+}
+
+
+// handle 401, 404, 403
+const handleStatusCode = res => {
+    if (res.status === 401) {
         redirect('/unauthorized')
     }
-    return user;
+    else if (res.status === 403) {
+        redirect('/forbidden');
+    }
+
+    return res.json()
 }
