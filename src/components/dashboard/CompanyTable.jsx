@@ -43,7 +43,7 @@ const CompanyTable = ({ companies }) => {
         }
     };
 
-    // Helper to generate initials for the placeholder icon
+
     const getInitials = (name) => {
         return name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'CO';
     };
