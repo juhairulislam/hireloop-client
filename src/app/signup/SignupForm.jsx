@@ -267,7 +267,7 @@ export default function SignupForm({ redirectTo = "/" }) {
                         </div>
                     )}
 
-                    {/* Submit */}
+
                     <Button
                         type="submit"
                         color="primary"
