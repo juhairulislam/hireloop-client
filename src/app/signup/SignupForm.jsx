@@ -278,7 +278,7 @@ export default function SignupForm({ redirectTo = "/" }) {
                         Sign Up
                     </Button>
 
-                    {/* Footer */}
+
                     <div className="text-center pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                         Already have an account?{" "}
                         <Link
