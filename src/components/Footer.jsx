@@ -85,7 +85,6 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-zinc-900/50 flex flex-col sm:flex-row items-center justify-between gap-6">
           
-          {/* Social Media Icons */}
           <div className="flex items-center gap-3">
             <a
               href="#"
