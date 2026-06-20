@@ -231,7 +231,7 @@ export default function AdminUsersTable({ users }) {
                 </div>
             </div>
 
-            {/* Confirmation Modal Overlay */}
+
             {isConfirmOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/60">
                     <div className="w-full max-w-sm bg-[#1e1e1e] border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-6">
