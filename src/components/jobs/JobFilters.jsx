@@ -102,7 +102,7 @@ export default function JobFilters({
           </Select>
         </div>
 
-        {/* 4. Remote Checkbox Filter - Span 1 column */}
+
         <div className="md:col-span-1 flex items-center justify-start md:justify-center h-10 pb-1">
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input 
