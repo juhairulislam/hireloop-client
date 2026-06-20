@@ -70,21 +70,8 @@ export default function JobListingContainer({ jobs, filters, total }) {
 
   }, [router, searchQuery, selectedType, selectedCategory, isRemoteOnly, page])
 
-  // Compute matched filter rows instantly
-  // const jobs = useMemo(() => {
-  //   return jobs.filter((job) => {
-  //     const matchesSearch =
-  //       job.jobTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       job.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       job.requirements?.toLowerCase().includes(searchQuery.toLowerCase());
 
-  //     const matchesType = selectedType === "all" || job.jobType === selectedType;
-  //     const matchesCategory = selectedCategory === "all" || job.jobCategory === selectedCategory;
-  //     const matchesRemote = !isRemoteOnly || job.isRemote === true;
-
-  //     return matchesSearch && matchesType && matchesCategory && matchesRemote;
-  //   });
-  // }, [searchQuery, selectedType, selectedCategory, isRemoteOnly, jobs]);
+  
 
   return (
     <>
