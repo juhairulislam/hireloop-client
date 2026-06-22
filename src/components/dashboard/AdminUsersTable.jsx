@@ -138,7 +138,7 @@ export default function AdminUsersTable({ users }) {
                                             )}
                                         </td>
 
-                                        {/* Actions Column */}
+
                                         <td className="py-4 px-6 text-right whitespace-nowrap text-xs font-medium">
                                             <div className="flex items-center justify-end gap-4">
 
