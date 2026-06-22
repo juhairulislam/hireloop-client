@@ -142,7 +142,6 @@ export default function AdminUsersTable({ users }) {
                                         <td className="py-4 px-6 text-right whitespace-nowrap text-xs font-medium">
                                             <div className="flex items-center justify-end gap-4">
 
-                                                {/* Change Roles Triggers via confirmation flow */}
                                                 {userRole !== 'admin' && (
                                                     <button
                                                         onClick={() => initiateRoleChange(userId, user.name, 'admin')}
