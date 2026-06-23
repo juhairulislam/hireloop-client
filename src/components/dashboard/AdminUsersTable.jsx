@@ -122,7 +122,7 @@ export default function AdminUsersTable({ users }) {
                                             {formatDate(user.createdAt)}
                                         </td>
 
-                                        {/* Status Badge */}
+
                                         <td className="py-4 px-6 whitespace-nowrap">
                                             {userStatus === 'Active' ? (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-emerald-950/30 text-emerald-400 border border-emerald-900/40">
