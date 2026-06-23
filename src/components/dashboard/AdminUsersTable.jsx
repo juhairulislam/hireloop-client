@@ -118,7 +118,6 @@ export default function AdminUsersTable({ users }) {
                                             )}
                                         </td>
 
-                                        {/* Join Date */}
                                         <td className="py-4 px-6 text-zinc-400 whitespace-nowrap">
                                             {formatDate(user.createdAt)}
                                         </td>
